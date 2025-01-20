@@ -13,18 +13,20 @@ public class PostService {
     private final PostRepository postRepository;
 
     public Post write(String title, String body) {
-        // 1. Post 조립
-        Post post = new Post();
-//        post.setId(1L); id는 기본적으로 JPA가 관리함.
-        post.setCreatedDate(LocalDateTime.now());
-        post.setModifiedDate(LocalDateTime.now());
-        post.setTitle(title);
-        post.setBody(body);
+        Post post = Post.builder()
+                .title(title)
+                .body(body)
+                .createdDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
+                .build();
 
-        // 2. repository에게 넘김 // 3. DB 반영
-        postRepository.save(post);
+//        Post post = new Post();
+//        post.setCreatedDate(LocalDateTime.now());
+//        post.setModifiedDate(LocalDateTime.now());
+//        post.setTitle(title);
+//        post.setBody(body);
 
-        return post;
+        return postRepository.save(post);
     }
 
     public long count() {
