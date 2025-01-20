@@ -30,7 +30,7 @@ public class PostService {
         return post;
     }
 
-    @Transactional
+    @Transactional  // 메서드의 시작이 트랜잭션 시작. 메서드의 끝이 트랜잭션 종료.
     public void modify2(long id, String title, String body) {
         Post post = postRepository.findById(id).get();
 
