@@ -34,23 +34,12 @@ public class BaseInitData {
     @Bean
     @Order(2)
     public ApplicationRunner applicationRunner2() {
-//        return args -> {
-//            Post post = postService.findById(1L).get();
-//
-//            Thread.sleep(1000);
-//
-////            postService.modify(post, "new title", "new body");
-//            postService.modify2(1L, "new title", "new body");
-//        };
-
         return new ApplicationRunner() {
             @Override
             @Transactional
             public void run(ApplicationArguments args) throws Exception {
                 Post post = postService.findById(1L).get();
-
                 Thread.sleep(1000);
-
                 postService.modify(post, "new title1212", "new body1212");
             }
         };
