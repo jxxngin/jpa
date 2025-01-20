@@ -34,7 +34,11 @@ public class BaseInitData {
     public ApplicationRunner applicationRunner2() {
         return args -> {
             Post post = postService.findById(1L).get();
-            postService.modify(post, "new title", "new body");
+
+            Thread.sleep(1000);
+
+//            postService.modify(post, "new title", "new body");
+            postService.modify2(1L, "new title", "new body");
         };
     }
 }
