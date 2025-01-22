@@ -29,4 +29,8 @@ public class CommentService {
     public Optional<Comment> findById(long id) {
         return commentRepository.findById(id);
     }
+
+    public Comment save(Comment c1) {
+        return commentRepository.save(c1);
+    }
 }
