@@ -7,7 +7,6 @@ import com.example.jpa.domain.post.post.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,45 +27,24 @@ public class BaseInitData {
     @Order(1)
     public ApplicationRunner applicationRunner() {
         return args -> {
-            // 데이터 3개가 이미 있으면 패스
-            if (postService.count() > 0) {
-                return;
-            }
-
-            Post p1 = postService.write("title1", "body1");
-            postService.write("title2", "body2");
-            postService.write("title3", "body3");
-
-            commentService.write(p1, "comment1");
-            commentService.write(p1, "comment2");
-            commentService.write(p1, "comment3");
-        };
-    }
-
-    @Bean
-    @Order(2)
-    public ApplicationRunner applicationRunner2() {
-        return new ApplicationRunner() {
-            @Override
-            public void run(ApplicationArguments args) throws Exception {
-                self.work();
-            }
+            self.work();
         };
     }
 
     @Transactional
     public void work() {
-        // 시작
-        Comment c1 = commentService.findById(1L).get();
+        if (postService.count() > 0) {
+            return;
+        }
 
-        Post post = c1.getPost();
-        // EAGER -> 이미 모든 post 정보를 위에서 join으로 가져옴.
-        // LAZY -> post -> 비어있다.
+        Post p1 = postService.write("title1", "body1");
 
-        System.out.println(post.getId());
-        // post가 null은 아니고 id 하나만 채워져 있다.
+        Comment c1 = Comment.builder()
+                .body("comment1")
+                .build();
 
-        System.out.println(post.getTitle());
-        // 끝
+        p1.getComments().add(c1);   // 관계의 주인이 DB 반영을 한다.
+
+        commentService.write(p1, "comment1");
     }
 }
