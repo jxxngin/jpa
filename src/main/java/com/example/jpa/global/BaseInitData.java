@@ -6,10 +6,12 @@ import com.example.jpa.domain.post.post.entity.Post;
 import com.example.jpa.domain.post.post.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 
 @Configuration
@@ -17,6 +19,10 @@ import org.springframework.core.annotation.Order;
 public class BaseInitData {
     private final PostService postService;
     private final CommentService commentService;
+
+    // 프록시 객체를 획득
+    @Autowired
+    @Lazy private BaseInitData self;    // 프록시
 
     @Bean
     @Order(1)
@@ -42,21 +48,25 @@ public class BaseInitData {
     public ApplicationRunner applicationRunner2() {
         return new ApplicationRunner() {
             @Override
-            @Transactional
             public void run(ApplicationArguments args) throws Exception {
-                Comment c1 = commentService.findById(1L).get();
-                // SELECT * FROM comment WHERE id = 1;
-
-                Post post = c1.getPost();
-                // EAGER -> 이미 모든 post 정보를 위에서 join 으로 가져옴.
-
-                // LAZY -> post -> 비어 있다.
-
-                System.out.println(post.getId());
-                // post가 null은 아니고, id 하나만 채워져 있다.
-
-                System.out.println(post.getTitle());
+                self.work();
             }
         };
+    }
+
+    @Transactional
+    public void work() {
+        // 시작
+        Comment c1 = commentService.findById(1L).get();
+
+        Post post = c1.getPost();
+        // EAGER -> 이미 모든 post 정보를 위에서 join으로 가져옴.
+        // LAZY -> post -> 비어있다.
+
+        System.out.println(post.getId());
+        // post가 null은 아니고 id 하나만 채워져 있다.
+
+        System.out.println(post.getTitle());
+        // 끝
     }
 }
