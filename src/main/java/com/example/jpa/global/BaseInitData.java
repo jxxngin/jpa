@@ -4,7 +4,9 @@ import com.example.jpa.domain.post.comment.entity.Comment;
 import com.example.jpa.domain.post.comment.service.CommentService;
 import com.example.jpa.domain.post.post.entity.Post;
 import com.example.jpa.domain.post.post.service.PostService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,23 +37,23 @@ public class BaseInitData {
     @Bean
     @Order(2)
     public ApplicationRunner applicationRunner2() {
-        return args -> {
-            Post post = postService.findById(1L).get();
+        return new ApplicationRunner() {
+            @Override
+            @Transactional
+            public void run(ApplicationArguments args) throws Exception {
+                Post post = postService.findById(1L).get();
 
-            if (commentService.count() > 0) {
-                return;
+                if (commentService.count() > 0) {
+                    return;
+                }
+
+                Comment c5 = Comment.builder()
+                        .body("comment5")
+                        .build();
+                // 2번 방식 -> 훨씬 객체지향적 (자바스러움)
+
+                post.addComment(c5);    // comment1 댓글을 세팅
             }
-
-            Comment c1 = commentService.write(post.getId(), "comment1");
-            Comment c2 = commentService.write(post.getId(), "comment2");
-            Comment c3 = commentService.write(post.getId(), "comment3");
-
-            // 1번 댓글의 부모 게시글의 정보
-            System.out.println(c1.getId() + "번 댓글의 부모 게시글 번호는 " + c1.getPostId() + "입니다.");
-
-            // 1번 댓글의 부모 게시글 제목 정보
-            Post parent = postService.findById(c1.getPostId()).get();
-            System.out.println(c1.getId() + "번 댓글의 부모 게시글 제목은 " + parent.getTitle() + "입니다.");
         };
     }
 }
