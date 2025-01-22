@@ -30,8 +30,8 @@ public class Comment {
     @Setter(AccessLevel.PRIVATE)
     private LocalDateTime modifiedDate;
 
-//    private long postId;
-    @ManyToOne
+    // 실제 DB에 저장될 때는 post가 아니라 post.id가 저장되게 함.
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
     @Column(columnDefinition = "TEXT")

@@ -27,10 +27,13 @@ public class BaseInitData {
                 return;
             }
 
-            // 샘플 데이터 3개 생성.
-            postService.write("title1", "body1");
+            Post p1 = postService.write("title1", "body1");
             postService.write("title2", "body2");
             postService.write("title3", "body3");
+
+            commentService.write(p1, "comment1");
+            commentService.write(p1, "comment2");
+            commentService.write(p1, "comment3");
         };
     }
 
@@ -41,18 +44,18 @@ public class BaseInitData {
             @Override
             @Transactional
             public void run(ApplicationArguments args) throws Exception {
-                Post post = postService.findById(1L).get();
+                Comment c1 = commentService.findById(1L).get();
+                // SELECT * FROM comment WHERE id = 1;
 
-                if (commentService.count() > 0) {
-                    return;
-                }
+                Post post = c1.getPost();
+                // EAGER -> 이미 모든 post 정보를 위에서 join 으로 가져옴.
 
-                Comment c5 = Comment.builder()
-                        .body("comment5")
-                        .build();
-                // 2번 방식 -> 훨씬 객체지향적 (자바스러움)
+                // LAZY -> post -> 비어 있다.
 
-                post.addComment(c5);    // comment1 댓글을 세팅
+                System.out.println(post.getId());
+                // post가 null은 아니고, id 하나만 채워져 있다.
+
+                System.out.println(post.getTitle());
             }
         };
     }
