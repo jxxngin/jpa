@@ -55,6 +55,22 @@ public class PostService {
         return postRepository.findByTitle(title);
     }
 
+    public List<Post> findByTitleAndBody(String title1, String body1) {
+        return postRepository.findByTitleAndBody(title1, body1);
+    }
+
+    public List<Post> findByTitleLike(String keyword) {
+        return postRepository.findByTitleLike(keyword);
+    }
+
+    public List<Post> findByOrderByIdDesc() {
+        return postRepository.findByOrderByIdDesc();
+    }
+    
+    public List<Post> findTop2ByTitleOrderByIdDesc(String title) {
+        return postRepository.findTop2ByTitleOrderByIdDesc(title);
+    }
+
     public long count() {
         return postRepository.count();
     }
