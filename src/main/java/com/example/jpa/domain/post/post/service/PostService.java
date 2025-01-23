@@ -1,5 +1,6 @@
 package com.example.jpa.domain.post.post.service;
 
+import com.example.jpa.domain.member.entity.Member;
 import com.example.jpa.domain.post.post.entity.Post;
 import com.example.jpa.domain.post.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
@@ -16,8 +17,9 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
 
-    public Post write(String title, String body) {
+    public Post write(Member author, String title, String body) {
         Post post = Post.builder()
+                .author(author)
                 .title(title)
                 .body(body)
                 .build();
@@ -67,6 +69,10 @@ public class PostService {
 
     public List<Post> findByTitleLike(String keyword) {
         return postRepository.findByTitleLike(keyword);
+    }
+
+    public Page<Post> findByTitleLike(String keyword, Pageable pageable) {
+        return postRepository.findByTitleLike(keyword, pageable);
     }
 
     public List<Post> findByOrderByIdDesc() {
