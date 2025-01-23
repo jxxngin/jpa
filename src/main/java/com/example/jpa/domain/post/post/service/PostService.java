@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,14 @@ public class PostService {
 
     public void deleteById(long id) {
         postRepository.deleteById(id);
+    }
+
+    public List<Post> findAll() {
+        return postRepository.findAll();
+    }
+
+    public List<Post> findByTitle(String title) {
+        return postRepository.findByTitle(title);
     }
 
     public long count() {

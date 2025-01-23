@@ -39,6 +39,8 @@ public class BaseInitData {
         }
 
         Post p1 = postService.write("title1", "body1");
+        Post p2 = postService.write("title1", "body2");
+        Post p3 = postService.write("title1", "body3");
 
         Comment c1 = Comment.builder()
                 .body("comment1")
@@ -58,13 +60,5 @@ public class BaseInitData {
 
     @Transactional
     public void work2() {
-        Post post = postService.findById(1L).get();
-        // 외래키 제약 때문에 자식이 있는 post는 바로 지울 수 없다. post가 가지고 있는 댓글 3개를 먼저 지워야 한다.
-//        for(Comment comment : post.getComments()) {
-//            commentService.delete(comment);
-//        }
-
-        // cascade.REMOVE를 걸면 JPA가 알아서 지워준다.
-        postService.delete(post);
     }
 }
