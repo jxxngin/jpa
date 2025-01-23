@@ -83,6 +83,10 @@ public class PostService {
         return postRepository.findTop2ByTitleOrderByIdDesc(title);
     }
 
+    public List<Post> findByAuthorUsername(String username) {
+        return postRepository.findByAuthorUsername(username);
+    }
+
     public long count() {
         return postRepository.count();
     }

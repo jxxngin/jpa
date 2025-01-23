@@ -57,21 +57,22 @@ public class BaseInitData {
         Post p3 = postService.write(user2, "title1", "body3");
 
         Comment c1 = Comment.builder()
+                .author(user1)
                 .body("comment1")
                 .build();
 
         p1.addComment(c1);
 
         Comment c2 = Comment.builder()
+                .author(user1)
                 .body("comment2")
                 .build();
 
         p1.addComment(c2);
 
         Comment c3 = Comment.builder()
+                .author(user2)
                 .body("comment3")
                 .build();
-
-        p1.addComment(c3);
     }
 }
