@@ -27,12 +27,13 @@ public class BaseInitData {
     @Order(1)
     public ApplicationRunner applicationRunner() {
         return args -> {
-            self.work();
+            self.work1();
+            self.work2();
         };
     }
 
     @Transactional
-    public void work() {
+    public void work1() {
         if (postService.count() > 0) {
             return;
         }
@@ -42,6 +43,7 @@ public class BaseInitData {
         Comment c1 = Comment.builder()
                 .body("comment1")
                 .build();
+        commentService.save(c1);    // 바로 insert 실행
         p1.addComment(c1);
 
         Comment c2 = Comment.builder()
@@ -55,5 +57,16 @@ public class BaseInitData {
         p1.addComment(c3);
 
         p1.removeComment(c1);
+    }
+
+    @Transactional
+    public void work2() {
+        Post post = postService.findById(1L).get();
+
+        int count = post.getComments().size();
+
+        System.out.println(count);
+
+        post.removeComment(1L);
     }
 }

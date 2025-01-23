@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -49,5 +50,13 @@ public class Post {
 
     public void removeComment(Comment c1) {
         comments.remove(c1);
+    }
+
+    public void removeComment(long id) {
+        Optional<Comment> opComment = comments.stream()
+                .filter(com -> com.getId() == id)
+                .findFirst();
+
+        opComment.ifPresent(comment -> comments.remove(comment));
     }
 }
