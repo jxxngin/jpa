@@ -9,6 +9,7 @@ import com.example.jpa.domain.post.post.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -30,6 +31,14 @@ public class BaseInitData {
 
     @Bean
     @Order(1)
+    public ApplicationRunner applicationRunner() {
+        return args -> {
+            self.work1();
+            self.work2();
+        };
+    }
+
+    @Transactional
     public void work1() {
         if (memberService.count() > 0) {
             return;
@@ -51,10 +60,11 @@ public class BaseInitData {
 
         Member user1 = memberService.findByUsername("user1").get();
         Member user2 = memberService.findByUsername("user2").get();
+        Member user3 = memberService.findByUsername("user3").get();
 
         Post p1 = postService.write(user1, "title1", "body1");
-        Post p2 = postService.write(user1, "title1", "body2");
-        Post p3 = postService.write(user2, "title1", "body3");
+        Post p2 = postService.write(user2, "title1", "body2");
+        Post p3 = postService.write(user3, "title1", "body3");
 
         Comment c1 = Comment.builder()
                 .author(user1)
@@ -74,5 +84,7 @@ public class BaseInitData {
                 .author(user2)
                 .body("comment3")
                 .build();
+
+        p1.addComment(c3);
     }
 }
