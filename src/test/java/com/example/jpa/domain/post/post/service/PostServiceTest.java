@@ -174,6 +174,7 @@ public class PostServiceTest {
 
     @Test
     @DisplayName("회원 정보로 글 조회2")
+    @Transactional
     void t14() {
         // 회원 아이디로 회원이 작성한 글 목록 가져오기
         // SELECT * FROM post p WHERE INNER JOIN member m ON p.member_id = m.id where username = 'user1';
@@ -192,11 +193,25 @@ public class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글목록에서 회원 정보 가져오기")
+    @DisplayName("글목록에서 회원 정보 가져오기 -> N + 1")
     @Transactional
     void t15() {
-        List<Post> posts = postService.findAll();
+        // post에서 member 정보가 필요할 때 방법
 
+        // 1. post를 먼저 조회해서 member id를 알아온 후 -> member 조회 -> select 2번 조회
+        // 2. post랑 member를 붙여서 같이 조회 -> fetch join -> jpql
+        // 3. select * from post where member_id = 1 -> 1번
+        // 4. select * from post where member_id = 2 -> 2번
+        // 5. select * from post where member_id = 3 -> 3번
+        // ...
+        // 100. select * from post where member_id = 100 -> 100번
+
+        // select * from post where member_id in (1,2,3,4,5...,100);
+        // select * from post where member_id in (?,?,?,?)
+
+        List<Post> posts = postService.findAll();   // 목록 조회 sql1
+
+        // 목록의 개수 만큼 추가 select 발생 N
         for(Post post : posts) {
             System.out.println(post.getId() + ", " + post.getTitle() + ", " + post.getAuthor().getNickname());
         }
