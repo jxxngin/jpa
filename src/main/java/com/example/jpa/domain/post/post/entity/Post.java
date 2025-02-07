@@ -3,15 +3,14 @@ package com.example.jpa.domain.post.post.entity;
 import com.example.jpa.domain.member.entity.Member;
 import com.example.jpa.domain.post.comment.entity.Comment;
 import com.example.jpa.domain.tag.entity.Tag;
+import com.example.jpa.domain.tag.entity.TagId;
 import com.example.jpa.global.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -36,7 +35,7 @@ public class Post extends BaseTime {
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     public void addComment(Comment c) {
         comments.add(c);
@@ -45,6 +44,7 @@ public class Post extends BaseTime {
 
     public void addTag(String name) {
         Tag tag = Tag.builder()
+                .id(new TagId(this.getId(), name))
                 .name(name)
                 .post(this)
                 .build();
